@@ -1,0 +1,48 @@
+name: EventVision
+options:
+  deploymentTarget:
+    iOS: '16.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    PRODUCT_BUNDLE_IDENTIFIER: com.example.eventvision
+    TARGETED_DEVICE_FAMILY: '1'
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_NSCameraUsageDescription: EventVision uses the camera to measure room corners on your device.
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    MARKETING_VERSION: '0.1.0'
+    CURRENT_PROJECT_VERSION: '1'
+targets:
+  EventVision:
+    type: application
+    platform: iOS
+    info:
+      path: EventVision/Info.plist
+      properties:
+        UIRequiredDeviceCapabilities: [arkit]
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSCameraUsageDescription: EventVision uses the camera to measure room corners on your device.
+        UILaunchScreen: {}
+    sources:
+      - path: EventVision
+        excludes: [Web]
+      - path: EventVision/Web
+        type: folder
+        buildPhase: resources
+  EventVisionTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [EventVisionTests]
+    dependencies:
+      - target: EventVision
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.eventvision.tests
+schemes:
+  EventVision:
+    build:
+      targets:
+        EventVision: all
+        EventVisionTests: [test]
+    test:
+      targets: [EventVisionTests]

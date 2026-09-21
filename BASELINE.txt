@@ -1,0 +1,5 @@
+Source: user-supplied index(5).html
+Version: EventVision 10.7.4 PHOTO PREVIEW
+SHA-256: 0b37fc0d1e78c81a60b401c63ec7b7890969cbb66ada56da1220b94f9e3acc89
+Native copy changes: bundle Three.js; hide unsupported WebXR/capture/download/saved-calibration controls.
+Android/GitHub Pages source unchanged.
