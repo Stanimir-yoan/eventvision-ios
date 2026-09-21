@@ -56,7 +56,7 @@ enum ScanGeometry {
             return value + a.x*b.z-b.x*a.z
         }) / 2
     }
-    static func contract(_ points: [RoomPoint], id: String = UUID().uuidString()) throws -> [String: Any] {
+    static func contract(_ points: [RoomPoint], id: String = UUID().uuidString) throws -> [String: Any] {
         try validate(points)
         let origin = points[0], length = distance(points[0],points[1])
         let ex = (points[1].x-origin.x)/length, ez = (points[1].z-origin.z)/length
