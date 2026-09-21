@@ -1,0 +1,36 @@
+name: iOS compile and geometry tests
+on:
+  workflow_dispatch:
+  push:
+    paths: ['EventVision/**', 'EventVisionTests/**', 'project.yml', '.github/workflows/ios-check.yml']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install project generator
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Compile for iPhone without signing
+        run: xcodebuild -project EventVision.xcodeproj -scheme EventVision -sdk iphoneos -configuration Debug CODE_SIGNING_ALLOWED=NO build
+      - name: Pick available iPhone simulator
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(['xcrun','simctl','list','devices','available','--json']))['devices']
+          phone = next(d for runtime, group in devices.items() if 'iOS' in runtime for d in group if d['name'].startswith('iPhone'))
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write('SIMULATOR_ID=' + phone['udid'] + '\n')
+          PY
+      - name: Run geometry tests
+        run: xcodebuild -project EventVision.xcodeproj -scheme EventVision -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=NO test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iOS-test-results
+          path: TestResults.xcresult
